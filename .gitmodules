@@ -1,0 +1,3 @@
+[submodule "mm1acc"]
+	path = mm1acc
+	url = https://github.com/dirkjankrijnders/mm1acc.git
