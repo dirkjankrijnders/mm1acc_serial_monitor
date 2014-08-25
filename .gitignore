@@ -31,3 +31,13 @@
 *.xcscheme
 
 *.plist
+
+*.d
+
+*.eep
+
+*.lss
+
+*.lst
+
+*.sym
