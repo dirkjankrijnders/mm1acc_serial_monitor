@@ -19,8 +19,8 @@
 
 DEVICE     = atmega328p
 CLOCK      = 16000000
-PROGRAMMER = -c usbasp #-c stk500v2 -P avrdoper
-OBJECTS    = main.o ../lib/mm1acc/mm1acc.o ../lib/uartlibrary/uart.o
+PROGRAMMER = -carduino -P/dev/tty.usbserial-A700eDQt -b57600 -D -V #-c usbasp #-c stk500v2 -P avrdoper
+OBJECTS    = main.o ../lib/mm1acc/mm1acc.o ../lib/uartlibrary/uart.o dcc_decode.o config.o myeeprom.o
 INCLUDES   = -I. -I../lib/mm1acc -I../lib/uartlibrary
 FUSES      = -U hfuse:w:0xd9:m -U lfuse:w:0x24:m
 
@@ -53,7 +53,7 @@ AVRDUDE = avrdude $(PROGRAMMER) -p $(DEVICE)
 COMPILE = avr-gcc -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(DEVICE) $(INCLUDES)
 
 # symbolic targets:
-all:	main.hex
+all:	main.hex main.eeprom.hex
 
 .c.o:
 	$(COMPILE) -c $< -o $@
@@ -94,6 +94,10 @@ main.hex: main.elf
 	avr-size --format=avr --mcu=$(DEVICE) main.elf
 # If you have an EEPROM section, you must also create a hex file for the
 # EEPROM and add it to the "flash" target.
+
+main.eeprom.hex: main.elf
+	avr-objcopy -j .eeprom --change-section-lma .eeprom=0 -O ihex $< $@
+
 
 # Targets for code debugging and analysis:
 disasm:	main.elf
